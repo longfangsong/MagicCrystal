@@ -16,9 +16,9 @@ var COMPUTER_ENTITY: BlockEntityType<ComputerEntity>? = null
 
 @Suppress("UNUSED")
 object MagicCrystal : ModInitializer {
-    private const val MOD_ID = "magic_crystal"
-    private val COMPUTER_BLOCK: ComputerBlock = ComputerBlock(FabricBlockSettings.of(Material.STONE).hardness(4.0f))
-
+    const val MOD_ID = "magic_crystal"
+    val COMPUTER_BLOCK: ComputerBlock = ComputerBlock(FabricBlockSettings.of(Material.STONE).hardness(4.0f))
+    var COMPUTER_ITEM: BlockItem? = null
     override fun onInitialize() {
         println("Magic Crystal mod has been initialized.")
 
@@ -27,7 +27,7 @@ object MagicCrystal : ModInitializer {
                 Identifier(MOD_ID, "computer"),
                 COMPUTER_BLOCK
         )
-        Registry.register(
+        COMPUTER_ITEM = Registry.register(
                 Registry.ITEM,
                 Identifier(MOD_ID, "computer"),
                 BlockItem(COMPUTER_BLOCK, Item.Settings().group(ItemGroup.MISC))

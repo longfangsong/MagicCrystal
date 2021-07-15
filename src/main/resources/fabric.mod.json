@@ -21,6 +21,12 @@
         "adapter": "kotlin",
         "value": "com.fairchild_superconductor.magic_crystal.MagicCrystal"
       }
+    ],
+    "client": [
+      {
+        "adapter": "kotlin",
+        "value": "com.fairchild_superconductor.magic_crystal.MagicCrystalClient"
+      }
     ]
   },
   "mixins": [

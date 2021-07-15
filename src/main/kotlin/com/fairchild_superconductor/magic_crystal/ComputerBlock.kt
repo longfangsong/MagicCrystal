@@ -11,6 +11,7 @@ import net.minecraft.util.ActionResult
 import net.minecraft.util.Hand
 import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.BlockPos
+import net.minecraft.util.math.Vec3d
 import net.minecraft.world.World
 
 class ComputerBlock(settings: FabricBlockSettings) : Block(settings), BlockEntityProvider {
@@ -18,6 +19,9 @@ class ComputerBlock(settings: FabricBlockSettings) : Block(settings), BlockEntit
         if (world?.isClient == true) {
             player?.sendMessage(LiteralText("Hello, world!"), false)
         }
+        val newPos = BlockPos(Vec3d(pos!!.x + 1.0, pos.y.toDouble(), pos.z.toDouble()))
+        world?.removeBlock(pos, true)
+        world?.setBlockState(newPos, state)
         return ActionResult.SUCCESS
     }
 
