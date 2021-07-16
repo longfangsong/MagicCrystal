@@ -1,4 +1,4 @@
-package com.fairchild_superconductor.magic_crystal
+package com.fairchild_superconductor.magic_crystal.computer
 
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.Item

@@ -1,5 +1,7 @@
 package com.fairchild_superconductor.magic_crystal
 
+import com.fairchild_superconductor.magic_crystal.computer.ComputerBlock
+import com.fairchild_superconductor.magic_crystal.computer.ComputerEntity
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.fabricmc.fabric.api.`object`.builder.v1.block.entity.FabricBlockEntityTypeBuilder
@@ -36,6 +38,16 @@ object MagicCrystal : ModInitializer {
                 Registry.BLOCK_ENTITY_TYPE,
                 Identifier(MOD_ID, "computer_entity"),
                 FabricBlockEntityTypeBuilder.create({ pos, state -> ComputerEntity(pos, state) }, COMPUTER_BLOCK).build(null)
+        )
+        Registry.register(
+                Registry.ITEM,
+                Identifier(MOD_ID, "hammer"),
+                Item(Item.Settings().group(ItemGroup.TOOLS).maxDamage(64))
+        )
+        Registry.register(
+                Registry.ITEM,
+                Identifier(MOD_ID, "iron_plate"),
+                Item(Item.Settings().group(ItemGroup.MISC))
         )
     }
 }

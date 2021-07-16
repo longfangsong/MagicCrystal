@@ -1,0 +1,6 @@
+{
+  "parent": "builtin/generated",
+  "textures": {
+    "layer0": "magic_crystal:item/iron_plate"
+  }
+}

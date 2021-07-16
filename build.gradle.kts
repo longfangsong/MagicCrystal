@@ -12,7 +12,12 @@ version = modVersion
 val mavenGroup: String by project
 group = mavenGroup
 minecraft {}
-repositories {}
+repositories {
+    maven {
+        name = "Siphalor's Maven"
+        url = uri("https://maven.siphalor.de")
+    }
+}
 dependencies {
     val minecraftVersion: String by project
     minecraft("com.mojang:minecraft:$minecraftVersion")
@@ -24,6 +29,7 @@ dependencies {
     modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricVersion")
     val fabricKotlinVersion: String by project
     modImplementation("net.fabricmc:fabric-language-kotlin:$fabricKotlinVersion")
+    modImplementation("de.siphalor:nbtcrafting-1.17:2+")
 }
 tasks {
     val javaVersion = JavaVersion.VERSION_16

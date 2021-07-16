@@ -1,0 +1,18 @@
+{
+  "type": "crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "magic_crystal:hammer",
+      "remainder": {
+        "item": "magic_crystal:hammer",
+        "data": {
+          "Damage": "$ i0.Damage + 1"
+        }
+      }
+    },
+    { "item": "minecraft:iron_ingot" }
+  ],
+  "result": {
+    "item": "magic_crystal:iron_plate"
+  }
+}

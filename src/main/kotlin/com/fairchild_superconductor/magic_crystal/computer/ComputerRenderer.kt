@@ -1,15 +1,13 @@
-package com.fairchild_superconductor.magic_crystal
+package com.fairchild_superconductor.magic_crystal.computer
 
+import com.fairchild_superconductor.magic_crystal.MagicCrystal
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.render.VertexConsumerProvider
 import net.minecraft.client.render.WorldRenderer
 import net.minecraft.client.render.block.entity.BlockEntityRenderer
 import net.minecraft.client.render.model.json.ModelTransformation
 import net.minecraft.client.util.math.MatrixStack
-import net.minecraft.item.Item
-import net.minecraft.item.ItemGroup
 import net.minecraft.item.ItemStack
-import net.minecraft.item.Items
 import net.minecraft.util.math.Vec3f
 import kotlin.math.sin
 

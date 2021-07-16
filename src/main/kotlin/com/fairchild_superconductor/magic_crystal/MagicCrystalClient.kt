@@ -1,5 +1,6 @@
 package com.fairchild_superconductor.magic_crystal
 
+import com.fairchild_superconductor.magic_crystal.computer.ComputerRenderer
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry
 
