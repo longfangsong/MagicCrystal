@@ -368,3 +368,5 @@ luac.out
 # Local History for Visual Studio Code
 
 run
+.idea
+.vscode
