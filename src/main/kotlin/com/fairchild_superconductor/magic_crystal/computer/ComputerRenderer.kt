@@ -19,9 +19,7 @@ class ComputerRenderer : BlockEntityRenderer<ComputerEntity> {
         val offset = sin((entity?.world?.time!! + tickDelta) / 8.0) / 4.0
         // Move the item
         matrices.translate(0.5, 1.25 + offset, 0.5)
-
         // Rotate the item
-
         matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion((entity.world!!.time + tickDelta) * 4))
         val lightAbove = WorldRenderer.getLightmapCoordinates(entity.world, entity.pos.up())
         MinecraftClient.getInstance().itemRenderer
