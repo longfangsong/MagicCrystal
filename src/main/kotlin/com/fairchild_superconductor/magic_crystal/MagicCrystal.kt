@@ -32,7 +32,7 @@ var COMPUTER_ENTITY: BlockEntityType<ComputerEntity>? = null
 object MagicCrystal : ModInitializer {
     const val MOD_ID = "magic_crystal"
     val COMPUTER_BLOCK: ComputerBlock = ComputerBlock(FabricBlockSettings.of(Material.STONE).hardness(4.0f))
-    val TIN_ORE_BLOCK: Block = Block(FabricBlockSettings.of(Material.STONE).hardness(5.0f))
+    val TIN_ORE_BLOCK: Block = Block(FabricBlockSettings.of(Material.STONE).hardness(1.5f))
     var COMPUTER_ITEM: BlockItem? = null
     override fun onInitialize() {
         val TIN_ORE_OVERWORLD: ConfiguredFeature<*, *> = Feature.ORE
