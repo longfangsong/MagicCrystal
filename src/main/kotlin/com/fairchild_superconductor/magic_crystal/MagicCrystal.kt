@@ -83,6 +83,11 @@ object MagicCrystal : ModInitializer {
             Item(Item.Settings().group(ItemGroup.MISC))
         )
         Registry.register(
+            Registry.ITEM,
+            Identifier(MOD_ID, "raw_tin"),
+            Item(Item.Settings().group(ItemGroup.MISC))
+        )
+        Registry.register(
             Registry.BLOCK,
             Identifier(MOD_ID, "tin_ore"),
             TIN_ORE_BLOCK

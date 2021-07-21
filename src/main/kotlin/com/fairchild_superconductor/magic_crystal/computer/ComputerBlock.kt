@@ -22,6 +22,7 @@ class ComputerBlock(settings: FabricBlockSettings) : Block(settings), BlockEntit
         val newPos = BlockPos(Vec3d(pos!!.x + 1.0, pos.y.toDouble(), pos.z.toDouble()))
         world?.removeBlock(pos, true)
         world?.setBlockState(newPos, state)
+        player?.addExperience(100)
         return ActionResult.SUCCESS
     }
 
