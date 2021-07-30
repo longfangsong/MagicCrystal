@@ -2,6 +2,7 @@ package com.fairchild_superconductor.magic_crystal
 
 import com.fairchild_superconductor.magic_crystal.computer.ComputerBlock
 import com.fairchild_superconductor.magic_crystal.computer.ComputerEntity
+import com.fairchild_superconductor.magic_crystal.rubber_tree.RubberLogBlock
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.fabricmc.fabric.api.`object`.builder.v1.block.entity.FabricBlockEntityTypeBuilder
@@ -33,6 +34,8 @@ object MagicCrystal : ModInitializer {
     const val MOD_ID = "magic_crystal"
     val COMPUTER_BLOCK: ComputerBlock = ComputerBlock(FabricBlockSettings.of(Material.STONE).hardness(4.0f))
     val TIN_ORE_BLOCK: Block = Block(FabricBlockSettings.of(Material.STONE).hardness(1.5f))
+    val RUBBER_LEAVES_BLOCK: Block = Block(FabricBlockSettings.of(Material.LEAVES).hardness(1.0f))
+    val RUBBER_LOG_BLOCK = RubberLogBlock()
     var COMPUTER_ITEM: BlockItem? = null
     override fun onInitialize() {
         val TIN_ORE_OVERWORLD: ConfiguredFeature<*, *> = Feature.ORE
@@ -55,6 +58,21 @@ object MagicCrystal : ModInitializer {
             Registry.BLOCK,
             Identifier(MOD_ID, "computer"),
             COMPUTER_BLOCK
+        )
+        Registry.register(
+            Registry.BLOCK,
+            Identifier(MOD_ID, "rubber_leaves"),
+            RUBBER_LEAVES_BLOCK
+        )
+        Registry.register(
+            Registry.BLOCK,
+            Identifier(MOD_ID, "rubber_log"),
+            RUBBER_LOG_BLOCK
+        )
+        Registry.register(
+            Registry.BLOCK,
+            Identifier(MOD_ID, "tin_ore"),
+            TIN_ORE_BLOCK
         )
         COMPUTER_ITEM = Registry.register(
             Registry.ITEM,
@@ -80,7 +98,7 @@ object MagicCrystal : ModInitializer {
         Registry.register(
             Registry.ITEM,
             Identifier(MOD_ID, "tin_ore"),
-            Item(Item.Settings().group(ItemGroup.MISC))
+            BlockItem(TIN_ORE_BLOCK, Item.Settings().group(ItemGroup.MISC))
         )
         Registry.register(
             Registry.ITEM,
@@ -88,9 +106,14 @@ object MagicCrystal : ModInitializer {
             Item(Item.Settings().group(ItemGroup.MISC))
         )
         Registry.register(
-            Registry.BLOCK,
-            Identifier(MOD_ID, "tin_ore"),
-            TIN_ORE_BLOCK
+            Registry.ITEM,
+            Identifier(MOD_ID, "rubber_leaves"),
+            BlockItem(RUBBER_LEAVES_BLOCK, Item.Settings().group(ItemGroup.MISC))
+        )
+        Registry.register(
+            Registry.ITEM,
+            Identifier(MOD_ID, "rubber_log"),
+            BlockItem(RUBBER_LOG_BLOCK, Item.Settings().group(ItemGroup.MISC))
         )
 
         val tinOreOverworld = RegistryKey.of(
