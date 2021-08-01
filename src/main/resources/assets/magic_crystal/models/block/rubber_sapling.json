@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cross",
+  "textures": {
+    "cross": "magic_crystal:block/rubber_sapling"
+  }
+}
