@@ -2,7 +2,6 @@ package com.fairchild_superconductor.magic_crystal
 
 import com.fairchild_superconductor.magic_crystal.computer.ComputerBlock
 import com.fairchild_superconductor.magic_crystal.computer.ComputerEntity
-import com.fairchild_superconductor.magic_crystal.rubber_tree.RubberLogBlock
 import com.fairchild_superconductor.magic_crystal.rubber_tree.RubberSaplingBlock
 import com.fairchild_superconductor.magic_crystal.rubber_tree.RubberSaplingGenerator
 import net.fabricmc.api.ModInitializer
@@ -15,8 +14,8 @@ import net.minecraft.block.entity.BlockEntityType
 import net.minecraft.item.BlockItem
 import net.minecraft.item.Item
 import net.minecraft.item.ItemGroup
+import net.minecraft.sound.BlockSoundGroup
 import net.minecraft.util.Identifier
-import net.minecraft.util.collection.DataPool
 import net.minecraft.util.math.intprovider.ConstantIntProvider
 import net.minecraft.util.registry.BuiltinRegistries
 import net.minecraft.util.registry.Registry
@@ -34,7 +33,6 @@ import net.minecraft.world.gen.feature.size.TwoLayersFeatureSize
 import net.minecraft.world.gen.foliage.BlobFoliagePlacer
 import net.minecraft.world.gen.heightprovider.UniformHeightProvider
 import net.minecraft.world.gen.stateprovider.SimpleBlockStateProvider
-import net.minecraft.world.gen.stateprovider.WeightedBlockStateProvider
 import net.minecraft.world.gen.trunk.StraightTrunkPlacer
 import java.util.*
 
@@ -48,9 +46,18 @@ object MagicCrystal : ModInitializer {
     const val MOD_ID = "magic_crystal"
     val COMPUTER_BLOCK: ComputerBlock = ComputerBlock(FabricBlockSettings.of(Material.STONE).hardness(4.0f))
     val TIN_ORE_BLOCK: Block = Block(FabricBlockSettings.of(Material.STONE).hardness(1.5f))
-    val RUBBER_LEAVES_BLOCK: Block = Block(FabricBlockSettings.of(Material.LEAVES).hardness(1.0f))
-    val RUBBER_LOG_BLOCK = RubberLogBlock()
-    val RUBBER_SAPLING_BLOCK = RubberSaplingBlock(RubberSaplingGenerator(), FabricBlockSettings.of(Material.LEAVES))
+    val RUBBER_LEAVES_BLOCK = LeavesBlock(
+        FabricBlockSettings.of(Material.LEAVES).hardness(0.2f).ticksRandomly().sounds(BlockSoundGroup.GRASS).nonOpaque()
+    )
+    val RUBBER_LOG_BLOCK = PillarBlock(
+        AbstractBlock.Settings.of(
+            Material.WOOD
+        ) { MapColor.SPRUCE_BROWN }
+            .strength(2.0f, 2f)
+            .sounds(BlockSoundGroup.WOOD)
+            .ticksRandomly()
+    )
+    val RUBBER_SAPLING_BLOCK = RubberSaplingBlock(RubberSaplingGenerator(), FabricBlockSettings.of(Material.PLANT).noCollision().ticksRandomly().breakInstantly())
     var COMPUTER_ITEM: BlockItem? = null
     override fun onInitialize() {
         val TIN_ORE_OVERWORLD: ConfiguredFeature<*, *> = Feature.ORE
@@ -167,17 +174,18 @@ object MagicCrystal : ModInitializer {
                 TwoLayersFeatureSize(1, 0, 1)
             ).build()
         )
-
+        println(RUBBER_TREE_CONFIGURE)
         Registry.register(
             BuiltinRegistries.CONFIGURED_FEATURE,
             Identifier(MOD_ID, "rubber_tree"),
             RUBBER_TREE_CONFIGURE
         )
-        val forestBiomes: Collection<RegistryKey<Biome>> =
-            listOf(BiomeKeys.FOREST, BiomeKeys.WOODED_HILLS, BiomeKeys.FLOWER_FOREST)
-
+        val jungleBiomes: Collection<RegistryKey<Biome>> = listOf(
+            BiomeKeys.JUNGLE, BiomeKeys.JUNGLE_EDGE, BiomeKeys.JUNGLE_HILLS,
+            BiomeKeys.MODIFIED_JUNGLE, BiomeKeys.MODIFIED_JUNGLE_EDGE
+        )
         BiomeModifications.addFeature(
-            BiomeSelectors.includeByKey(forestBiomes),
+            { true },
             GenerationStep.Feature.VEGETAL_DECORATION, rubberTreeKey
         )
 

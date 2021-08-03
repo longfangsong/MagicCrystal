@@ -8,6 +8,8 @@ import java.util.*
 
 class RubberSaplingGenerator: SaplingGenerator() {
     override fun getTreeFeature(random: Random?, bees: Boolean): ConfiguredFeature<TreeFeatureConfig, *>? {
+        println("getTreeFeature")
+        println(RUBBER_TREE_CONFIGURE)
         return RUBBER_TREE_CONFIGURE
     }
 }
