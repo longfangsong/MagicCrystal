@@ -20,21 +20,19 @@ import net.minecraft.util.math.intprovider.ConstantIntProvider
 import net.minecraft.util.registry.BuiltinRegistries
 import net.minecraft.util.registry.Registry
 import net.minecraft.util.registry.RegistryKey
-import net.minecraft.world.biome.Biome
-import net.minecraft.world.biome.BiomeKeys
+import net.minecraft.world.Heightmap
 import net.minecraft.world.gen.GenerationStep
 import net.minecraft.world.gen.YOffset
+import net.minecraft.world.gen.decorator.CountExtraDecoratorConfig
+import net.minecraft.world.gen.decorator.Decorator
+import net.minecraft.world.gen.decorator.HeightmapDecoratorConfig
 import net.minecraft.world.gen.decorator.RangeDecoratorConfig
-import net.minecraft.world.gen.feature.ConfiguredFeature
-import net.minecraft.world.gen.feature.Feature
-import net.minecraft.world.gen.feature.OreFeatureConfig
-import net.minecraft.world.gen.feature.TreeFeatureConfig
+import net.minecraft.world.gen.feature.*
 import net.minecraft.world.gen.feature.size.TwoLayersFeatureSize
 import net.minecraft.world.gen.foliage.BlobFoliagePlacer
 import net.minecraft.world.gen.heightprovider.UniformHeightProvider
 import net.minecraft.world.gen.stateprovider.SimpleBlockStateProvider
 import net.minecraft.world.gen.trunk.StraightTrunkPlacer
-import java.util.*
 
 
 var COMPUTER_ENTITY: BlockEntityType<ComputerEntity>? = null
@@ -57,8 +55,12 @@ object MagicCrystal : ModInitializer {
             .sounds(BlockSoundGroup.WOOD)
             .ticksRandomly()
     )
-    val RUBBER_SAPLING_BLOCK = RubberSaplingBlock(RubberSaplingGenerator(), FabricBlockSettings.of(Material.PLANT).noCollision().ticksRandomly().breakInstantly())
+    val RUBBER_SAPLING_BLOCK = RubberSaplingBlock(
+        RubberSaplingGenerator(),
+        FabricBlockSettings.of(Material.LEAVES).noCollision().ticksRandomly().breakInstantly()
+    )
     var COMPUTER_ITEM: BlockItem? = null
+
     override fun onInitialize() {
         val TIN_ORE_OVERWORLD: ConfiguredFeature<*, *> = Feature.ORE
             .configure(
@@ -149,21 +151,6 @@ object MagicCrystal : ModInitializer {
             BlockItem(RUBBER_SAPLING_BLOCK, Item.Settings().group(ItemGroup.MISC))
         )
 
-        val tinOreOverworld = RegistryKey.of(
-            Registry.CONFIGURED_FEATURE_KEY,
-            Identifier(MOD_ID, "tin_ore")
-        )
-        Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, tinOreOverworld.value, TIN_ORE_OVERWORLD)
-        BiomeModifications.addFeature(
-            BiomeSelectors.foundInOverworld(),
-            GenerationStep.Feature.UNDERGROUND_ORES,
-            tinOreOverworld
-        )
-
-        val rubberTreeKey = RegistryKey.of(
-            Registry.CONFIGURED_FEATURE_KEY,
-            Identifier(MOD_ID, "rubber_tree")
-        )
         RUBBER_TREE_CONFIGURE = Feature.TREE.configure(
             TreeFeatureConfig.Builder(
                 SimpleBlockStateProvider(RUBBER_LOG_BLOCK.defaultState),
@@ -172,21 +159,42 @@ object MagicCrystal : ModInitializer {
                 SimpleBlockStateProvider(RUBBER_SAPLING_BLOCK.defaultState),
                 BlobFoliagePlacer(ConstantIntProvider.create(2), ConstantIntProvider.create(0), 3),
                 TwoLayersFeatureSize(1, 0, 1)
-            ).build()
+            ).ignoreVines().build()
         )
-        println(RUBBER_TREE_CONFIGURE)
+
+        val tinOreOverworld = RegistryKey.of(
+            Registry.CONFIGURED_FEATURE_KEY,
+            Identifier(MOD_ID, "tin_ore")
+        )
+        val rubberTreeKey = RegistryKey.of(
+            Registry.CONFIGURED_FEATURE_KEY,
+            Identifier(MOD_ID, "rubber_tree")
+        )
+        var rubberTreesKey = RegistryKey.of(
+            Registry.CONFIGURED_FEATURE_KEY,
+            Identifier(MOD_ID, "rubber_trees")
+        )
+        Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, tinOreOverworld.value, TIN_ORE_OVERWORLD)
+        Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, rubberTreeKey.value, RUBBER_TREE_CONFIGURE)
         Registry.register(
             BuiltinRegistries.CONFIGURED_FEATURE,
-            Identifier(MOD_ID, "rubber_tree"),
-            RUBBER_TREE_CONFIGURE
-        )
-        val jungleBiomes: Collection<RegistryKey<Biome>> = listOf(
-            BiomeKeys.JUNGLE, BiomeKeys.JUNGLE_EDGE, BiomeKeys.JUNGLE_HILLS,
-            BiomeKeys.MODIFIED_JUNGLE, BiomeKeys.MODIFIED_JUNGLE_EDGE
+            Identifier(MOD_ID, "rubber_trees"),
+            (RUBBER_TREE_CONFIGURE as ConfiguredFeature<TreeFeatureConfig, *>)
+                .decorate(
+                    Decorator.HEIGHTMAP.configure(
+                        HeightmapDecoratorConfig(Heightmap.Type.MOTION_BLOCKING)
+                    ).spreadHorizontally()
+                )
         )
         BiomeModifications.addFeature(
-            { true },
-            GenerationStep.Feature.VEGETAL_DECORATION, rubberTreeKey
+            BiomeSelectors.foundInOverworld(),
+            GenerationStep.Feature.UNDERGROUND_ORES,
+            tinOreOverworld
+        )
+        BiomeModifications.addFeature(
+            BiomeSelectors.foundInOverworld(),
+            GenerationStep.Feature.VEGETAL_DECORATION,
+            rubberTreesKey
         )
 
         println("Magic Crystal mod has been initialized.")
