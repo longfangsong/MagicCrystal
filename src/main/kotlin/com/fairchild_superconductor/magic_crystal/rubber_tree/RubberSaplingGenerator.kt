@@ -6,10 +6,8 @@ import net.minecraft.world.gen.feature.ConfiguredFeature
 import net.minecraft.world.gen.feature.TreeFeatureConfig
 import java.util.*
 
-class RubberSaplingGenerator: SaplingGenerator() {
+class RubberSaplingGenerator : SaplingGenerator() {
     override fun getTreeFeature(random: Random?, bees: Boolean): ConfiguredFeature<TreeFeatureConfig, *>? {
-        println("getTreeFeature")
-        println(RUBBER_TREE_CONFIGURE)
         return RUBBER_TREE_CONFIGURE
     }
 }

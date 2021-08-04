@@ -9,6 +9,7 @@ import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.fabricmc.fabric.api.`object`.builder.v1.block.entity.FabricBlockEntityTypeBuilder
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors
+import net.fabricmc.fabric.api.tag.TagRegistry
 import net.minecraft.block.*
 import net.minecraft.block.entity.BlockEntityType
 import net.minecraft.item.BlockItem
@@ -23,7 +24,6 @@ import net.minecraft.util.registry.RegistryKey
 import net.minecraft.world.Heightmap
 import net.minecraft.world.gen.GenerationStep
 import net.minecraft.world.gen.YOffset
-import net.minecraft.world.gen.decorator.CountExtraDecoratorConfig
 import net.minecraft.world.gen.decorator.Decorator
 import net.minecraft.world.gen.decorator.HeightmapDecoratorConfig
 import net.minecraft.world.gen.decorator.RangeDecoratorConfig
@@ -34,9 +34,7 @@ import net.minecraft.world.gen.heightprovider.UniformHeightProvider
 import net.minecraft.world.gen.stateprovider.SimpleBlockStateProvider
 import net.minecraft.world.gen.trunk.StraightTrunkPlacer
 
-
 var COMPUTER_ENTITY: BlockEntityType<ComputerEntity>? = null
-
 var RUBBER_TREE_CONFIGURE: ConfiguredFeature<TreeFeatureConfig, *>? = null
 
 @Suppress("UNUSED")
@@ -46,6 +44,7 @@ object MagicCrystal : ModInitializer {
     val TIN_ORE_BLOCK: Block = Block(FabricBlockSettings.of(Material.STONE).hardness(1.5f))
     val RUBBER_LEAVES_BLOCK = LeavesBlock(
         FabricBlockSettings.of(Material.LEAVES).hardness(0.2f).ticksRandomly().sounds(BlockSoundGroup.GRASS).nonOpaque()
+            .noCollision()
     )
     val RUBBER_LOG_BLOCK = PillarBlock(
         AbstractBlock.Settings.of(
@@ -55,9 +54,10 @@ object MagicCrystal : ModInitializer {
             .sounds(BlockSoundGroup.WOOD)
             .ticksRandomly()
     )
+
     val RUBBER_SAPLING_BLOCK = RubberSaplingBlock(
         RubberSaplingGenerator(),
-        FabricBlockSettings.of(Material.LEAVES).noCollision().ticksRandomly().breakInstantly()
+        FabricBlockSettings.of(Material.LEAVES).ticksRandomly().breakInstantly()
     )
     var COMPUTER_ITEM: BlockItem? = null
 
@@ -77,7 +77,6 @@ object MagicCrystal : ModInitializer {
             )
             .spreadHorizontally()
             .repeat(20)
-
         Registry.register(
             Registry.BLOCK,
             Identifier(MOD_ID, "computer"),
@@ -93,6 +92,7 @@ object MagicCrystal : ModInitializer {
             Identifier(MOD_ID, "rubber_log"),
             RUBBER_LOG_BLOCK
         )
+        TagRegistry.block(Identifier(MOD_ID, "rubber_log"))
         Registry.register(
             Registry.BLOCK,
             Identifier(MOD_ID, "tin_ore"),
@@ -139,7 +139,6 @@ object MagicCrystal : ModInitializer {
             Identifier(MOD_ID, "rubber_log"),
             BlockItem(RUBBER_LOG_BLOCK, Item.Settings().group(ItemGroup.MISC))
         )
-
         Registry.register(
             Registry.BLOCK,
             Identifier(MOD_ID, "rubber_sapling"),
@@ -150,7 +149,6 @@ object MagicCrystal : ModInitializer {
             Identifier(MOD_ID, "rubber_sapling"),
             BlockItem(RUBBER_SAPLING_BLOCK, Item.Settings().group(ItemGroup.MISC))
         )
-
         RUBBER_TREE_CONFIGURE = Feature.TREE.configure(
             TreeFeatureConfig.Builder(
                 SimpleBlockStateProvider(RUBBER_LOG_BLOCK.defaultState),
@@ -161,7 +159,6 @@ object MagicCrystal : ModInitializer {
                 TwoLayersFeatureSize(1, 0, 1)
             ).ignoreVines().build()
         )
-
         val tinOreOverworld = RegistryKey.of(
             Registry.CONFIGURED_FEATURE_KEY,
             Identifier(MOD_ID, "tin_ore")
@@ -170,7 +167,7 @@ object MagicCrystal : ModInitializer {
             Registry.CONFIGURED_FEATURE_KEY,
             Identifier(MOD_ID, "rubber_tree")
         )
-        var rubberTreesKey = RegistryKey.of(
+        val rubberTreeGenerationKey = RegistryKey.of(
             Registry.CONFIGURED_FEATURE_KEY,
             Identifier(MOD_ID, "rubber_trees")
         )
@@ -194,7 +191,7 @@ object MagicCrystal : ModInitializer {
         BiomeModifications.addFeature(
             BiomeSelectors.foundInOverworld(),
             GenerationStep.Feature.VEGETAL_DECORATION,
-            rubberTreesKey
+            rubberTreeGenerationKey
         )
 
         println("Magic Crystal mod has been initialized.")
