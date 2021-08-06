@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/leaves",
+  "textures": {
+    "all": "magic_crystal:block/rubber_leaves"
+  }
+}

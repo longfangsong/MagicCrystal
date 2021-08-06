@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "axis=y": {
+      "model": "magic_crystal:block/rubber_log"
+    },
+    "axis=z": {
+      "model": "magic_crystal:block/rubber_log",
+      "x": 90
+    },
+    "axis=x": {
+      "model": "magic_crystal:block/rubber_log",
+      "x": 90,
+      "y": 90
+    }
+  }
+}
