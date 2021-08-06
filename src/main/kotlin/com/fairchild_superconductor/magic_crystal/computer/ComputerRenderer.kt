@@ -1,6 +1,6 @@
 package com.fairchild_superconductor.magic_crystal.computer
 
-import com.fairchild_superconductor.magic_crystal.MagicCrystal
+import com.fairchild_superconductor.magic_crystal.mod_registry.Items
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.render.VertexConsumerProvider
 import net.minecraft.client.render.WorldRenderer
@@ -13,8 +13,15 @@ import kotlin.math.sin
 
 
 class ComputerRenderer : BlockEntityRenderer<ComputerEntity> {
-    private val stack = ItemStack(MagicCrystal.COMPUTER_ITEM, 1)
-    override fun render(entity: ComputerEntity?, tickDelta: Float, matrices: MatrixStack?, vertexConsumers: VertexConsumerProvider?, light: Int, overlay: Int) {
+    private val stack = ItemStack(Items.COMPUTER, 1)
+    override fun render(
+        entity: ComputerEntity?,
+        tickDelta: Float,
+        matrices: MatrixStack?,
+        vertexConsumers: VertexConsumerProvider?,
+        light: Int,
+        overlay: Int
+    ) {
         matrices!!.push()
         val offset = sin((entity?.world?.time!! + tickDelta) / 8.0) / 4.0
         // Move the item
@@ -23,7 +30,7 @@ class ComputerRenderer : BlockEntityRenderer<ComputerEntity> {
         matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion((entity.world!!.time + tickDelta) * 4))
         val lightAbove = WorldRenderer.getLightmapCoordinates(entity.world, entity.pos.up())
         MinecraftClient.getInstance().itemRenderer
-                .renderItem(stack, ModelTransformation.Mode.GROUND, lightAbove, overlay, matrices, vertexConsumers, 1)
+            .renderItem(stack, ModelTransformation.Mode.GROUND, lightAbove, overlay, matrices, vertexConsumers, 1)
         // Mandatory call after GL calls
         matrices.pop()
     }
