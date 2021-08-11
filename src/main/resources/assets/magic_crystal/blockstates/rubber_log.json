@@ -1,14 +1,26 @@
 {
   "variants": {
-    "axis=y": {
+    "axis=y,start_producing_rubber=false": {
       "model": "magic_crystal:block/rubber_log"
     },
-    "axis=z": {
+    "axis=y,start_producing_rubber=true": {
+      "model": "magic_crystal:block/rubber_log_producing"
+    },
+    "axis=z,start_producing_rubber=false": {
       "model": "magic_crystal:block/rubber_log",
       "x": 90
     },
-    "axis=x": {
+    "axis=z,start_producing_rubber=true": {
+      "model": "magic_crystal:block/rubber_log_producing",
+      "x": 90
+    },
+    "axis=x,start_producing_rubber=false": {
       "model": "magic_crystal:block/rubber_log",
+      "x": 90,
+      "y": 90
+    },
+    "axis=x,start_producing_rubber=true": {
+      "model": "magic_crystal:block/rubber_log_producing",
       "x": 90,
       "y": 90
     }
