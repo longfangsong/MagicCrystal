@@ -5,6 +5,7 @@ import com.fairchild_superconductor.magic_crystal.mod_registry.Items as ModItems
 import net.minecraft.block.BlockState
 import net.minecraft.block.entity.BlockEntity
 import net.minecraft.block.entity.BlockEntityTicker
+import net.minecraft.entity.ItemEntity
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.inventory.Inventory
 import net.minecraft.item.ItemStack
@@ -53,9 +54,9 @@ class RubberLogEntity(pos: BlockPos?, state: BlockState?) :
 
     override fun setStack(slot: Int, stack: ItemStack?) {
         assert(slot == 0)
-        if (containedItem.isEmpty) {
+        if (containedItem.isEmpty && stack?.isEmpty == false) {
             containedItem.count += 1
-            stack?.count = (stack?.count ?: 1) - 1
+            stack.count -= 1
         }
     }
 
@@ -80,8 +81,11 @@ class RubberLogEntity(pos: BlockPos?, state: BlockState?) :
     override fun tick(world: World?, pos: BlockPos?, state: BlockState?, blockEntity: RubberLogEntity?) {
         if (!containedItem.isEmpty && ticksPassed < 100) {
             ticksPassed += 1
-        } else if (ticksPassed >= 100) {
-            containedItem = ItemStack(ModItems.RUBBER_BOWL, 1)
+        } else if (ticksPassed >= 100 && pos != null) {
+            val stack = ItemStack(ModItems.RUBBER_BOWL)
+            val itemEntity = ItemEntity(world, pos.x.toDouble(), pos.y.toDouble(), pos.z.toDouble(), stack)
+            world?.spawnEntity(itemEntity)
+            clear()
         }
     }
 }

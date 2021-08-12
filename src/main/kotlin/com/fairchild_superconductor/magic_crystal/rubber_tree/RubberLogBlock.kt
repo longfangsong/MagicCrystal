@@ -5,7 +5,9 @@ import net.minecraft.block.*
 import net.minecraft.block.entity.BlockEntity
 import net.minecraft.block.entity.BlockEntityTicker
 import net.minecraft.block.entity.BlockEntityType
+import net.minecraft.entity.LivingEntity
 import net.minecraft.entity.player.PlayerEntity
+import net.minecraft.item.ItemStack
 import net.minecraft.sound.BlockSoundGroup
 import net.minecraft.state.StateManager
 import net.minecraft.state.property.BooleanProperty
@@ -15,6 +17,7 @@ import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import net.minecraft.util.registry.Registry
+import net.minecraft.world.BlockView
 import net.minecraft.world.World
 
 
@@ -24,20 +27,23 @@ class RubberLogBlock : PillarBlock(
     ) { MapColor.SPRUCE_BROWN }
         .strength(2.0f, 2f)
         .sounds(BlockSoundGroup.WOOD)
-        .ticksRandomly()
+        .ticksRandomly().nonOpaque()
 ), BlockEntityProvider {
     companion object {
+        val CAN_PRODUCING_RUBBER = BooleanProperty.of("can_producing_rubber")
         val START_PRODUCING_RUBBER = BooleanProperty.of("start_producing_rubber")
     }
 
     init {
-        defaultState = getStateManager().defaultState.with(START_PRODUCING_RUBBER, false)
+        defaultState = getStateManager().defaultState
+            .with(CAN_PRODUCING_RUBBER, true)
+            .with(START_PRODUCING_RUBBER, false)
             .with(AXIS, Direction.Axis.Y)
     }
 
     override fun appendProperties(builder: StateManager.Builder<Block, BlockState>?) {
         super.appendProperties(builder)
-        builder?.add(START_PRODUCING_RUBBER)
+        builder?.add(CAN_PRODUCING_RUBBER)?.add(START_PRODUCING_RUBBER)
     }
 
     override fun onUse(
@@ -52,14 +58,13 @@ class RubberLogBlock : PillarBlock(
         val stack = player?.getStackInHand(Hand.MAIN_HAND)
         val isSharpTool = FabricToolTags.SWORDS.contains(stack?.item) ||
                 FabricToolTags.AXES.contains(stack?.item)
-        if (state?.get(START_PRODUCING_RUBBER) == false && isSharpTool) {
+        if (isSharpTool && state?.get(CAN_PRODUCING_RUBBER) == true && state.get(START_PRODUCING_RUBBER) == false) {
             world?.setBlockState(pos, state.with(START_PRODUCING_RUBBER, true))
             if (stack?.damage != null) {
                 stack.damage += 1
             }
         } else {
             val entity: RubberLogEntity = world?.getBlockEntity(pos) as RubberLogEntity
-            println(Registry.ITEM.getId(stack?.item))
             if (Registry.ITEM.getId(stack?.item).toString() == "minecraft:bowl") {
                 entity.setStack(0, stack)
             } else {
@@ -91,5 +96,15 @@ class RubberLogBlock : PillarBlock(
                 blockEntity as RubberLogEntity
             )
         }
+    }
+
+    override fun onPlaced(
+        world: World?,
+        pos: BlockPos?,
+        state: BlockState?,
+        placer: LivingEntity?,
+        itemStack: ItemStack?
+    ) {
+        world?.setBlockState(pos, state?.with(CAN_PRODUCING_RUBBER, false)?.with(START_PRODUCING_RUBBER, false))
     }
 }
