@@ -63,7 +63,7 @@ class RubberLogBlock : PillarBlock(
             if (stack?.damage != null) {
                 stack.damage += 1
             }
-        } else {
+        } else if (state?.get(START_PRODUCING_RUBBER) == true) {
             val entity: RubberLogEntity = world?.getBlockEntity(pos) as RubberLogEntity
             if (Registry.ITEM.getId(stack?.item).toString() == "minecraft:bowl") {
                 entity.setStack(0, stack)
