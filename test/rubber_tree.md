@@ -15,4 +15,5 @@
 12. Repeat 8 to 11.
 13. Repeat 8 and exit the game at once.
 14. Reopen the game. Wait for 100 ticks (around 5s). Check whether a bowl of rubber is ejected.
-15. Put a rubber log manually, use a sword on it. It should not use another model.
+15. Try putting a bowl into a non-sword used rubber log. This operation should fail.
+16. Put a rubber log manually, use a sword on it. It should not use another model.
