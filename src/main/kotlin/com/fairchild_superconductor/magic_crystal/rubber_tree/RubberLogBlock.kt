@@ -54,7 +54,6 @@ class RubberLogBlock : PillarBlock(
         hand: Hand?,
         hit: BlockHitResult?
     ): ActionResult {
-        super.onUse(state, world, pos, player, hand, hit)
         val stack = player?.getStackInHand(Hand.MAIN_HAND)
         val isSharpTool = FabricToolTags.SWORDS.contains(stack?.item) ||
                 FabricToolTags.AXES.contains(stack?.item)
@@ -63,6 +62,7 @@ class RubberLogBlock : PillarBlock(
             if (stack?.damage != null) {
                 stack.damage += 1
             }
+            return ActionResult.SUCCESS
         } else if (state?.get(START_PRODUCING_RUBBER) == true) {
             val entity: RubberLogEntity = world?.getBlockEntity(pos) as RubberLogEntity
             if (Registry.ITEM.getId(stack?.item).toString() == "minecraft:bowl") {
@@ -71,8 +71,10 @@ class RubberLogBlock : PillarBlock(
                 player?.inventory?.offerOrDrop(entity.getStack(0))
                 entity.removeStack(0)
             }
+            return ActionResult.SUCCESS
+        } else {
+            return super.onUse(state, world, pos, player, hand, hit)
         }
-        return ActionResult.SUCCESS
     }
 
     override fun createBlockEntity(pos: BlockPos?, state: BlockState?): BlockEntity {
