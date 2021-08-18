@@ -12,6 +12,7 @@ object Items {
     var HAMMER: Item = registerItem("hammer")
     var RAW_TIN: Item = registerItem("raw_tin")
     var IRON_PLATE: Item = registerItem("iron_plate")
+    var RUBBER_BOWL: Item = registerItem("rubber_bowl")
     var TIN_ORE: BlockItem = registerBlockItem("tin_ore", Blocks.TIN_ORE)
     var RUBBER_LOG: BlockItem = registerBlockItem("rubber_log", Blocks.RUBBER_LOG)
     var RUBBER_LEAVES: BlockItem = registerBlockItem("rubber_leaves", Blocks.RUBBER_LEAVES)
@@ -37,6 +38,6 @@ object Items {
     }
 
     fun registerAll() {
-        Items.COMPUTER = registerBlockItem("computer", Blocks.COMPUTER)
+        COMPUTER = registerBlockItem("computer", Blocks.COMPUTER)
     }
 }

@@ -2,6 +2,7 @@ package com.fairchild_superconductor.magic_crystal.mod_registry
 
 import com.fairchild_superconductor.magic_crystal.MagicCrystal
 import com.fairchild_superconductor.magic_crystal.computer.ComputerBlock
+import com.fairchild_superconductor.magic_crystal.rubber_tree.RubberLogBlock
 import com.fairchild_superconductor.magic_crystal.rubber_tree.RubberSaplingBlock
 import com.fairchild_superconductor.magic_crystal.rubber_tree.RubberSaplingGenerator
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
@@ -13,14 +14,7 @@ import net.minecraft.util.registry.Registry
 object Blocks {
     val COMPUTER: ComputerBlock = ComputerBlock(FabricBlockSettings.of(Material.STONE).hardness(4.0f))
     val TIN_ORE: Block = Block(FabricBlockSettings.of(Material.STONE).hardness(1.5f))
-    val RUBBER_LOG = PillarBlock(
-        AbstractBlock.Settings.of(
-            Material.WOOD
-        ) { MapColor.SPRUCE_BROWN }
-            .strength(2.0f, 2f)
-            .sounds(BlockSoundGroup.WOOD)
-            .ticksRandomly()
-    )
+    val RUBBER_LOG = RubberLogBlock()
     val RUBBER_LEAVES = LeavesBlock(
         FabricBlockSettings.of(Material.LEAVES).hardness(0.2f).ticksRandomly().sounds(BlockSoundGroup.GRASS)
             .nonOpaque()
