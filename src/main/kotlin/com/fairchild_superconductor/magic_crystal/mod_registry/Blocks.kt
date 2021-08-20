@@ -2,6 +2,9 @@ package com.fairchild_superconductor.magic_crystal.mod_registry
 
 import com.fairchild_superconductor.magic_crystal.MagicCrystal
 import com.fairchild_superconductor.magic_crystal.computer.ComputerBlock
+import com.fairchild_superconductor.magic_crystal.electric.battery.debug.DebugBatteryBlock
+import com.fairchild_superconductor.magic_crystal.electric.machine.debug.DebugMachineBlock
+import com.fairchild_superconductor.magic_crystal.electric.wire.WireBlock
 import com.fairchild_superconductor.magic_crystal.rubber_tree.RubberLogBlock
 import com.fairchild_superconductor.magic_crystal.rubber_tree.RubberSaplingBlock
 import com.fairchild_superconductor.magic_crystal.rubber_tree.RubberSaplingGenerator
@@ -23,6 +26,9 @@ object Blocks {
         RubberSaplingGenerator(),
         FabricBlockSettings.of(Material.LEAVES).ticksRandomly().breakInstantly()
     )
+    val WIRE = WireBlock(FabricBlockSettings.of(Material.METAL).hardness(1.0f).nonOpaque())
+    val DEBUG_MACHINE = DebugMachineBlock()
+    val DEBUG_BATTERY = DebugBatteryBlock()
 
     private fun registerBlock(block: Block, path: String): Block {
         return Registry.register(Registry.BLOCK, Identifier(MagicCrystal.MOD_ID, path), block)

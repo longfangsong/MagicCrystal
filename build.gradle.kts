@@ -30,6 +30,9 @@ dependencies {
     val fabricKotlinVersion: String by project
     modImplementation("net.fabricmc:fabric-language-kotlin:$fabricKotlinVersion")
     modImplementation("de.siphalor:nbtcrafting-1.17:2+")
+    implementation(kotlin("test"))
+    implementation(kotlin("test-junit"))
+    modImplementation("org.ejml:ejml-dsparse:0.41")
 }
 tasks {
     val javaVersion = JavaVersion.VERSION_16
@@ -54,5 +57,8 @@ tasks {
         sourceCompatibility = javaVersion
         targetCompatibility = javaVersion
         withSourcesJar()
+    }
+    test {
+        useJUnitPlatform()
     }
 }
