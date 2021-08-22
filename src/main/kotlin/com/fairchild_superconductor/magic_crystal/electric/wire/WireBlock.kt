@@ -53,6 +53,6 @@ class WireBlock : Block(FabricBlockSettings.of(Material.METAL).hardness(1.0f).no
                 return ActionResult.SUCCESS
             }
         }
-        return ActionResult.PASS
+        return super.onUse(state, world, pos, player, hand, hit)
     }
 }

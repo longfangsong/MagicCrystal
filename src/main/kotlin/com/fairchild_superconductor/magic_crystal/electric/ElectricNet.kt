@@ -117,17 +117,15 @@ class ElectricNet(val solution: Solution, val visited: Set<BlockPos>) {
                 val endpoints = mutableSetOf<ElectricBlockEntity>()
                 while (pendingVisit.isNotEmpty()) {
                     val toVisit = pendingVisit.removeFirst()
-                    if (!visited.contains(toVisit)) {
-                        val foundCurrentPoses = findCurrentsStartFrom(blockView, toVisit, pendingVisitDirections)
-                        for (foundCurrentPos in foundCurrentPoses) {
-                            visited += foundCurrentPos
-                            val current =
-                                Current(foundCurrentPos.map { blockView.getBlockEntity(it) as ElectricBlockEntity })
-                            currents += current
-                            endpoints += current.start
-                            endpoints += current.end
-                            pendingVisit += current.end.pos
-                        }
+                    val foundCurrentPoses = findCurrentsStartFrom(blockView, toVisit, pendingVisitDirections)
+                    for (foundCurrentPos in foundCurrentPoses) {
+                        visited += foundCurrentPos
+                        val current =
+                            Current(foundCurrentPos.map { blockView.getBlockEntity(it) as ElectricBlockEntity })
+                        currents += current
+                        endpoints += current.start
+                        endpoints += current.end
+                        pendingVisit += current.end.pos
                     }
                 }
                 val result = solve(endpoints.toList(), currents)

@@ -6,7 +6,7 @@ import com.fairchild_superconductor.magic_crystal.electric.wire.WireEntity
 import net.minecraft.util.math.BlockPos
 import kotlin.test.Test
 
-internal class ElectricNetKtTest {
+internal class ElectricNetTest {
     @Test
     fun solve() {
         val battery = DebugBatteryEntity(BlockPos(0, 0, 0), null, 10.0)
