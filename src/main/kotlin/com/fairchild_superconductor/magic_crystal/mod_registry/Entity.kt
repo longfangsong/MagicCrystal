@@ -38,7 +38,7 @@ object Entity {
             Registry.BLOCK_ENTITY_TYPE,
             Identifier(MagicCrystal.MOD_ID, "wire_entity"),
             FabricBlockEntityTypeBuilder.create(
-                { pos, state -> WireEntity(pos, state, 0.0) },
+                { pos, state -> WireEntity(pos, state, 0.02) },
                 Blocks.WIRE
             ).build(null)
         )
@@ -46,7 +46,7 @@ object Entity {
             Registry.BLOCK_ENTITY_TYPE,
             Identifier(MagicCrystal.MOD_ID, "debug_machine_entity"),
             FabricBlockEntityTypeBuilder.create(
-                { pos, state -> DebugMachineEntity(pos, state, 0.0) },
+                { pos, state -> DebugMachineEntity(pos, state, 10.0) },
                 Blocks.DEBUG_MACHINE
             ).build(null)
         )
@@ -54,7 +54,7 @@ object Entity {
             Registry.BLOCK_ENTITY_TYPE,
             Identifier(MagicCrystal.MOD_ID, "debug_battery_entity"),
             FabricBlockEntityTypeBuilder.create(
-                { pos, state -> DebugBatteryEntity(pos, state, 0.0) },
+                { pos, state -> DebugBatteryEntity(pos, state, 10.0) },
                 Blocks.DEBUG_BATTERY
             ).build(null)
         )

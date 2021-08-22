@@ -26,7 +26,7 @@ object Blocks {
         RubberSaplingGenerator(),
         FabricBlockSettings.of(Material.LEAVES).ticksRandomly().breakInstantly()
     )
-    val WIRE = WireBlock(FabricBlockSettings.of(Material.METAL).hardness(1.0f).nonOpaque())
+    val WIRE = WireBlock()
     val DEBUG_MACHINE = DebugMachineBlock()
     val DEBUG_BATTERY = DebugBatteryBlock()
 
@@ -40,5 +40,8 @@ object Blocks {
         registerBlock(RUBBER_LOG, "rubber_log")
         registerBlock(RUBBER_LEAVES, "rubber_leaves")
         registerBlock(RUBBER_SAPLING, "rubber_sapling")
+        registerBlock(DEBUG_BATTERY, "debug_battery")
+        registerBlock(DEBUG_MACHINE, "debug_machine")
+        registerBlock(WIRE, "wire")
     }
 }

@@ -96,8 +96,6 @@ fun solve(
     val solver = LinearSolverFactory_DSCC.lu(FillReducing.NONE)
     solver.setA(a)
     val x = DMatrixSparseCSC(1, size, size)
-    a.print()
-    b.print()
     solver.solveSparse(b, x)
     for (i in wireEndPoints.indices) {
         resultPotentials[wireEndPoints[i]] = x[i, 0]
@@ -108,7 +106,7 @@ fun solve(
     return Solution(resultPotentials, resultCurrents)
 }
 
-class ElectricNet(val solution: Solution) {
+class ElectricNet(val solution: Solution, val visited: Set<BlockPos>) {
     companion object {
         fun fromBFS(blockView: BlockView, foundEntity: ElectricBlockEntity): ElectricNet? {
             return if (isCurrentEnd(blockView, foundEntity.pos)) {
@@ -122,6 +120,7 @@ class ElectricNet(val solution: Solution) {
                     if (!visited.contains(toVisit)) {
                         val foundCurrentPoses = findCurrentsStartFrom(blockView, toVisit, pendingVisitDirections)
                         for (foundCurrentPos in foundCurrentPoses) {
+                            visited += foundCurrentPos
                             val current =
                                 Current(foundCurrentPos.map { blockView.getBlockEntity(it) as ElectricBlockEntity })
                             currents += current
@@ -131,10 +130,31 @@ class ElectricNet(val solution: Solution) {
                         }
                     }
                 }
-                return ElectricNet(solve(endpoints.toList(), currents))
+                val result = solve(endpoints.toList(), currents)
+                return if (result.currents.isNotEmpty()) {
+                    println(result.currents)
+                    ElectricNet(result, visited.toSet())
+                } else {
+                    null
+                }
             } else {
                 null
             }
+        }
+    }
+
+    fun getDetail(blockView: BlockView, blockPos: BlockPos): String? {
+        val entity = blockView.getBlockEntity(blockPos)
+        return if (entity != null) {
+            val hasPotential = solution.potential[entity]
+            if (hasPotential != null) {
+                solution.potential[entity]?.let { "Potential: ${it}V" }
+            } else {
+                solution.currents.entries.find { it.key.contains(entity as ElectricBlockEntity) }
+                    ?.let { "Current: ${it.value}A" }
+            }
+        } else {
+            return null
         }
     }
 }

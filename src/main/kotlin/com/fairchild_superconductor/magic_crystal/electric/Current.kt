@@ -33,5 +33,7 @@ class Current(
             .joinToString("->")
     }
 
-
+    fun contains(entity: ElectricBlockEntity): Boolean {
+        return content.contains(entity)
+    }
 }

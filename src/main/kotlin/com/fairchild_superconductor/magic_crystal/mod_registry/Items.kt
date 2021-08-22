@@ -13,6 +13,7 @@ object Items {
     var RAW_TIN: Item = registerItem("raw_tin")
     var IRON_PLATE: Item = registerItem("iron_plate")
     var RUBBER_BOWL: Item = registerItem("rubber_bowl")
+    var MULTIMETER: Item = registerItem("multimeter")
     var TIN_ORE: BlockItem = registerBlockItem("tin_ore", Blocks.TIN_ORE)
     var RUBBER_LOG: BlockItem = registerBlockItem("rubber_log", Blocks.RUBBER_LOG)
     var RUBBER_LEAVES: BlockItem = registerBlockItem("rubber_leaves", Blocks.RUBBER_LEAVES)
@@ -20,6 +21,9 @@ object Items {
 
     // items with entity needs to be inited later
     var COMPUTER: BlockItem? = null
+    var DEBUG_BATTERY: BlockItem? = null
+    var DEBUG_MACHINE: BlockItem? = null
+    var WIRE: BlockItem? = null
     private fun registerItem(path: String): Item {
         return Registry.register(
             Registry.ITEM,
@@ -39,5 +43,8 @@ object Items {
 
     fun registerAll() {
         COMPUTER = registerBlockItem("computer", Blocks.COMPUTER)
+        DEBUG_BATTERY = registerBlockItem("debug_battery", Blocks.DEBUG_BATTERY)
+        DEBUG_MACHINE = registerBlockItem("debug_machine", Blocks.DEBUG_MACHINE)
+        WIRE = registerBlockItem("wire", Blocks.WIRE)
     }
 }
