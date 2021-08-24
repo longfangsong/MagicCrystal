@@ -1,5 +1,6 @@
 package com.fairchild_superconductor.magic_crystal.electric.wire
 
+import com.fairchild_superconductor.magic_crystal.electric.ElectricBlock
 import com.fairchild_superconductor.magic_crystal.electric.ElectricNetManager
 import com.fairchild_superconductor.magic_crystal.mod_registry.Items
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
@@ -18,24 +19,9 @@ import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 
-class WireBlock : Block(FabricBlockSettings.of(Material.METAL).hardness(1.0f).nonOpaque()), BlockEntityProvider {
-    override fun createBlockEntity(pos: BlockPos?, state: BlockState?): BlockEntity {
+class WireBlock : ElectricBlock(FabricBlockSettings.of(Material.METAL).hardness(1.0f).nonOpaque()) {
+    override fun createBlockEntity(pos: BlockPos?, state: BlockState?): WireEntity {
         return WireEntity(pos, state, 0.02)
-    }
-
-    override fun <T : BlockEntity?> getTicker(
-        world: World?,
-        state: BlockState?,
-        type: BlockEntityType<T>?
-    ): BlockEntityTicker<T> {
-        return BlockEntityTicker { world1: World?, pos: BlockPos?, state1: BlockState?, blockEntity: T ->
-            (blockEntity as WireEntity).tick(
-                world1,
-                pos,
-                state1,
-                blockEntity
-            )
-        }
     }
 
     override fun onUse(

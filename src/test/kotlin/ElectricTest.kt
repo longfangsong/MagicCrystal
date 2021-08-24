@@ -1,5 +1,5 @@
-package com.fairchild_superconductor.magic_crystal.electric
-
+import com.fairchild_superconductor.magic_crystal.electric.Direction
+import com.fairchild_superconductor.magic_crystal.electric.ElectricEntity
 import com.fairchild_superconductor.magic_crystal.electric.battery.debug.DebugBatteryEntity
 import com.fairchild_superconductor.magic_crystal.electric.machine.debug.DebugMachineEntity
 import com.fairchild_superconductor.magic_crystal.electric.wire.WireEntity
@@ -11,7 +11,7 @@ import kotlin.test.Test
 
 internal class ElectricTest {
     class StubBlockView(
-        blockEntities: Iterable<ElectricBlockEntity>
+        blockEntities: Iterable<ElectricEntity>
     ) : BlockView {
         private var blockEntities = blockEntities.toList()
         override fun getHeight(): Int {
@@ -22,7 +22,7 @@ internal class ElectricTest {
             return 0
         }
 
-        override fun getBlockEntity(pos: BlockPos?): ElectricBlockEntity? {
+        override fun getBlockEntity(pos: BlockPos?): ElectricEntity? {
             return blockEntities.find { it.pos == pos }
         }
 
@@ -79,13 +79,21 @@ internal class ElectricTest {
     fun findCurrentsStartFrom() {
         val pendingVisitDirections = mutableMapOf<BlockPos, MutableList<Direction>>()
 
-        val result = findCurrentsStartFrom(stubBlockViewCycle, BlockPos(0, 0, 1), pendingVisitDirections)
+        val result = com.fairchild_superconductor.magic_crystal.electric.findCurrentsStartFrom(
+            stubBlockViewCycle,
+            BlockPos(0, 0, 1),
+            pendingVisitDirections
+        )
         assert(result.size == 3)
         assert(result.contains(listOf(BlockPos(0, 0, 1), BlockPos(1, 0, 1))))
         assert(result.contains(listOf(BlockPos(0, 0, 1), BlockPos(0, 0, 2), BlockPos(1, 0, 2))))
         assert(result.contains(listOf(BlockPos(0, 0, 1), BlockPos(0, 0, 0), BlockPos(1, 0, 0))))
 
-        val result2 = findCurrentsStartFrom(stubBlockViewCycle, BlockPos(1, 0, 1), pendingVisitDirections)
+        val result2 = com.fairchild_superconductor.magic_crystal.electric.findCurrentsStartFrom(
+            stubBlockViewCycle,
+            BlockPos(1, 0, 1),
+            pendingVisitDirections
+        )
         assert(result2.size == 3)
         assert(result2.contains(listOf(BlockPos(1, 0, 1), BlockPos(2, 0, 1))))
         assert(result2.contains(listOf(BlockPos(1, 0, 1), BlockPos(1, 0, 2))))

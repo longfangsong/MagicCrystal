@@ -59,6 +59,6 @@ tasks {
         withSourcesJar()
     }
     test {
-        useJUnitPlatform()
+        useJUnit()
     }
 }

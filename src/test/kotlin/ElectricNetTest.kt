@@ -1,5 +1,5 @@
-package com.fairchild_superconductor.magic_crystal.electric
-
+import com.fairchild_superconductor.magic_crystal.electric.Current
+import com.fairchild_superconductor.magic_crystal.electric.ElectricEntity
 import com.fairchild_superconductor.magic_crystal.electric.battery.debug.DebugBatteryEntity
 import com.fairchild_superconductor.magic_crystal.electric.machine.debug.DebugMachineEntity
 import com.fairchild_superconductor.magic_crystal.electric.wire.WireEntity
@@ -23,7 +23,7 @@ internal class ElectricNetTest {
             DebugMachineEntity(BlockPos(0, 0, 4), null, 10.0),
             DebugMachineEntity(BlockPos(2, 0, 3), null, 10.0)
         )
-        val endpoints = listOf<ElectricBlockEntity>(battery) + machines +
+        val endpoints = listOf<ElectricEntity>(battery) + machines +
                 wires[0] + wires[1] + wires[2] + wires[4] + wires[5]
         val currents = listOf(
             Current(listOf(battery, wires[0])),
@@ -35,7 +35,7 @@ internal class ElectricNetTest {
             Current(listOf(wires[4], wires[5])),
             Current(listOf(wires[5], machines[1])),
         )
-        val result = solve(endpoints, currents)
+        val result = com.fairchild_superconductor.magic_crystal.electric.solve(endpoints, currents)
         println(result)
     }
 }

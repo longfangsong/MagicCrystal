@@ -10,8 +10,8 @@ object ElectricNetManager {
     fun onElectricBlockTicked(blockView: BlockView, blockPos: BlockPos) {
         if (!electricNets.any { it.visited.contains(blockPos) }) {
             val entity = blockView.getBlockEntity(blockPos)
-            assert(entity is ElectricBlockEntity)
-            val newNet = ElectricNet.fromBFS(blockView, entity as ElectricBlockEntity)
+            assert(entity is ElectricEntity)
+            val newNet = ElectricNet.fromBFS(blockView, entity as ElectricEntity)
 
             if (newNet != null) {
                 electricNets += newNet

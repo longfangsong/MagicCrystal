@@ -1,17 +1,77 @@
 package com.fairchild_superconductor.magic_crystal.electric
 
 import com.fairchild_superconductor.magic_crystal.electric.battery.BatteryEntity
-import com.fairchild_superconductor.magic_crystal.electric.battery.debug.DebugBatteryEntity
 import com.fairchild_superconductor.magic_crystal.electric.machine.MachineEntity
-import com.fairchild_superconductor.magic_crystal.electric.machine.debug.DebugMachineEntity
 import com.fairchild_superconductor.magic_crystal.electric.wire.WireEntity
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.BlockView
 import org.ejml.data.DMatrixSparseCSC
 import org.ejml.sparse.FillReducing
 import org.ejml.sparse.csc.factory.LinearSolverFactory_DSCC
-import kotlin.test.Test
 
+
+private fun allDirectionsToVisit(blockView: BlockView, pos: BlockPos): List<Direction> {
+    val result = mutableListOf<Direction>()
+    for (face in Direction.values()) {
+        if (blockView.getBlockEntity(pos + face) is ElectricEntity) {
+            result.add(face)
+        }
+    }
+    return result
+}
+
+fun isCurrentEnd(blockView: BlockView, pos: BlockPos): Boolean {
+    val entity = blockView.getBlockEntity(pos)
+    return entity is BatteryEntity || entity is MachineEntity || allDirectionsToVisit(blockView, pos).size > 2
+}
+
+private fun seekOneCurrent(
+    blockView: BlockView,
+    startPos: BlockPos,
+    pendingVisitDirections: MutableMap<BlockPos, MutableList<Direction>>
+): List<BlockPos>? {
+    val result = listOf(startPos)
+    if (isCurrentEnd(blockView, startPos)) {
+        return result
+    }
+    val nextVisitDirection = pendingVisitDirections[startPos]!!.removeFirstOrNull() ?: return null
+    val nextVisitPos = startPos + nextVisitDirection
+    if (pendingVisitDirections[nextVisitPos] == null) {
+        pendingVisitDirections[nextVisitPos] = allDirectionsToVisit(blockView, nextVisitPos).toMutableList()
+    }
+    pendingVisitDirections[nextVisitPos]!!.remove(nextVisitDirection.reverse)
+    val subResult = seekOneCurrent(blockView, nextVisitPos, pendingVisitDirections) ?: return null
+    return result + subResult
+}
+
+/**
+ * Find all currents starts from [startPos] in [blockView]
+ * @return A list contains all currents found
+ */
+fun findCurrentsStartFrom(
+    blockView: BlockView,
+    startPos: BlockPos,
+    pendingVisitDirections: MutableMap<BlockPos, MutableList<Direction>>
+): List<List<BlockPos>> {
+    assert(isCurrentEnd(blockView, startPos))
+    val result = mutableListOf<List<BlockPos>>()
+    if (pendingVisitDirections[startPos] == null)
+        pendingVisitDirections[startPos] = allDirectionsToVisit(blockView, startPos).toMutableList()
+    var nextVisitDirection = pendingVisitDirections[startPos]!!.removeFirstOrNull()
+    while (nextVisitDirection != null) {
+        val nextVisitPos = startPos + nextVisitDirection
+        if (pendingVisitDirections[nextVisitPos] == null) {
+            pendingVisitDirections[nextVisitPos] = allDirectionsToVisit(blockView, nextVisitPos).toMutableList()
+        }
+        pendingVisitDirections[nextVisitPos]!!.remove(nextVisitDirection.reverse)
+        val subResult = seekOneCurrent(blockView, nextVisitPos, pendingVisitDirections)
+        if (subResult != null) {
+            result.add(listOf(startPos) + subResult)
+        }
+        nextVisitDirection = pendingVisitDirections[startPos]!!.removeFirstOrNull()
+    }
+    return result
+}
 
 data class Solution(
     // note: for batteries, its potential doesn't have to be calculated
@@ -26,7 +86,7 @@ data class Solution(
 }
 
 fun solve(
-    endpoints: List<ElectricBlockEntity>,
+    endpoints: List<ElectricEntity>,
     currents: List<Current>
 ): Solution {
     val resultPotentials = mutableMapOf<WireEntity, Double>()
@@ -108,20 +168,20 @@ fun solve(
 
 class ElectricNet(val solution: Solution, val visited: Set<BlockPos>) {
     companion object {
-        fun fromBFS(blockView: BlockView, foundEntity: ElectricBlockEntity): ElectricNet? {
+        fun fromBFS(blockView: BlockView, foundEntity: ElectricEntity): ElectricNet? {
             return if (isCurrentEnd(blockView, foundEntity.pos)) {
                 val pendingVisitDirections = mutableMapOf<BlockPos, MutableList<Direction>>()
                 val pendingVisit = mutableListOf(foundEntity.pos)
                 val visited = mutableSetOf<BlockPos>()
                 val currents = mutableListOf<Current>()
-                val endpoints = mutableSetOf<ElectricBlockEntity>()
+                val endpoints = mutableSetOf<ElectricEntity>()
                 while (pendingVisit.isNotEmpty()) {
                     val toVisit = pendingVisit.removeFirst()
                     val foundCurrentPoses = findCurrentsStartFrom(blockView, toVisit, pendingVisitDirections)
                     for (foundCurrentPos in foundCurrentPoses) {
                         visited += foundCurrentPos
                         val current =
-                            Current(foundCurrentPos.map { blockView.getBlockEntity(it) as ElectricBlockEntity })
+                            Current(foundCurrentPos.map { blockView.getBlockEntity(it) as ElectricEntity })
                         currents += current
                         endpoints += current.start
                         endpoints += current.end
@@ -148,32 +208,11 @@ class ElectricNet(val solution: Solution, val visited: Set<BlockPos>) {
             if (hasPotential != null) {
                 solution.potential[entity]?.let { "Potential: ${it}V" }
             } else {
-                solution.currents.entries.find { it.key.contains(entity as ElectricBlockEntity) }
+                solution.currents.entries.find { it.key.contains(entity as ElectricEntity) }
                     ?.let { "Current: ${it.value}A" }
             }
         } else {
             return null
         }
-    }
-}
-
-class TestE {
-    @Test
-    fun net() {
-        val stubBlockView = ElectricTest.StubBlockView(
-            listOf(
-                DebugBatteryEntity(BlockPos(0, 0, 0), null, 10.0),
-                WireEntity(BlockPos(0, 0, 1), null, 0.02),
-                WireEntity(BlockPos(0, 0, 2), null, 0.02),
-                WireEntity(BlockPos(0, 0, 3), null, 0.02),
-                DebugMachineEntity(BlockPos(0, 0, 4), null, 10.0),
-                WireEntity(BlockPos(1, 0, 1), null, 0.02),
-                WireEntity(BlockPos(1, 0, 2), null, 0.02),
-                WireEntity(BlockPos(1, 0, 3), null, 0.02),
-                DebugMachineEntity(BlockPos(2, 0, 3), null, 10.0),
-            )
-        )
-        val result = ElectricNet.fromBFS(stubBlockView, stubBlockView.getBlockEntity(BlockPos(0, 0, 0))!!)
-        println(result!!.solution)
     }
 }

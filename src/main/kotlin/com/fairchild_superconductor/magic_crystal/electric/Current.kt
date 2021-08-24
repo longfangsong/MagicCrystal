@@ -5,9 +5,9 @@ import com.fairchild_superconductor.magic_crystal.electric.machine.MachineEntity
 import com.fairchild_superconductor.magic_crystal.electric.wire.WireEntity
 
 class Current(
-    inner: List<ElectricBlockEntity>
+    inner: List<ElectricEntity>
 ) : HasResistance {
-    private val content: List<ElectricBlockEntity>
+    private val content: List<ElectricEntity>
 
     init {
         content = if (inner.first() is MachineEntity || inner.last() is BatteryEntity)
@@ -22,10 +22,10 @@ class Current(
             } - ((content.first() as? WireEntity)?.resistance
                 ?: 0.0) / 2.0 - ((content.last() as? WireEntity)?.resistance ?: 0.0) / 2.0
 
-    val start: ElectricBlockEntity
+    val start: ElectricEntity
         get() = content.first()
 
-    val end: ElectricBlockEntity
+    val end: ElectricEntity
         get() = content.last()
 
     override fun toString(): String {
@@ -33,7 +33,7 @@ class Current(
             .joinToString("->")
     }
 
-    fun contains(entity: ElectricBlockEntity): Boolean {
+    fun contains(entity: ElectricEntity): Boolean {
         return content.contains(entity)
     }
 }
